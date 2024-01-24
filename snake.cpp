@@ -1,42 +1,57 @@
 #include <iostream>
 #include <string>
-using namespace std; 
-//global variable
+// #include <conio.h>
+
+using namespace std;
+// global variable
 bool game_over;
-const int width = 40;
+const int width = 20;
 const int height = 20;
 int x, y, fruit_x, fruit_y, score;
 enum eDirection
 {
   STOP = 0,
-  LEFT, 
+  LEFT,
   RIGHT,
   UP,
   DOWN
 };
 eDirection dir;
 // setup function
-void setup() {
+void setup()
+{
   game_over = false;
   dir = STOP;
   x = width / 2;
-  y = height / 2; 
+  y = height / 2;
   fruit_x = rand() % width;
   fruit_y = rand() % height;
   score = 0;
 }
 //
-void draw() {
-  system("cls");
-  for (int i = 0; i < width; i++) {
-    cout << "#"; 
+void draw()
+{
+
+  for (int i = 0; i < width; i++)
+  {
+    cout << "#";
   }
 
-  for (int i = 0; i < height; i++) {
-    for (int j = 0; j < width; j++) {
-      if (j == 0 || j == width -1)
+  for (int i = 0; i < height; i++)
+  {
+    for (int j = 0; j < width; j++)
+    {
+      if (j == 0 || j == width - 1)
       {
         cout << "#";
+      }
+      else if (j == x && i == y)
+      {
+        cout << "O";
+      }
+      else if (j == fruit_x && i == fruit_y)
+      {
+        cout << "F";
       }
       else
       {
@@ -52,15 +67,63 @@ void draw() {
   }
 }
 //
-void input() {
-
+void input()
+{
+  // conio.h librari doesn't work here so
+  if (_kbhit())
+  {
+    switch (_getch())
+    {
+    case 'a':
+      dir = LEFT;
+      break;
+    case 'd':
+      dir = RIGHT;
+      break;
+    case 'w':
+      dir = UP;
+      break;
+    case 's':
+      dir = DOWN;
+      break;
+    default:
+      break;
+    }
+  }
 }
 //
-void logic() {
-
+void logic()
+{
+ //movment
+  switch (dir)
+  {
+  case UP:
+    y--;
+    break;
+  case DOWN:
+    y++;
+    break;
+  case LEFT:
+    x--;
+    break;
+  case RIGHT:
+    x++;
+    break;
+  default:
+    break;
+  }
+  //scoring
+  if(x == fruit_x && y == fruit_y) {
+    score++;
+  }
+  //termination
+  if (x < 0 || x > width || y < 0 || y > height) {
+    game_over = true;
+  }
 }
 
-int main () {
+int main()
+{
 
 #ifndef ONLINE_JUDGE
   freopen("input.txt", "r", stdin);
@@ -72,9 +135,10 @@ int main () {
   while (!game_over)
   {
     draw();
-    input(); 
+    input();
     logic();
-    game_over = true;
+    // game_over = true;
   }
-}
 
+  cout << "you lost the game looser!" << endl;
+}
